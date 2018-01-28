@@ -27,6 +27,8 @@ function open_accordant_config() {
     // 调用配置文件
     // '''
     let screen_size = _get_screen_size()
+    console.log("screen size ", screen_size);
+
     let config_file = `${__dirname}/config/${screen_size}/config.json`
     let json = {}
     if (fs.existsSync(config_file)) {
@@ -98,7 +100,7 @@ class Autojumping {
         let press_time = distance * press_coefficient
         press_time = press_time > 200 ? press_time : 200
         press_time = int(press_time)
-        let cmd = `adb shell input swipe ${swipe_x1} ${swipe_y1} ${swipe_x2} ${swipe_y2} ` + String(press_time)
+        let cmd = `adb shell input swipe ${swipe_x1+Math.random()*20} ${swipe_y1+Math.random()*20} ${swipe_x2+Math.random()*20} ${swipe_y2+Math.random()*20} ` + String(press_time)
         console.log(cmd)
         execSync(cmd)
     }
@@ -133,7 +135,8 @@ class Autojumping {
             } = this.find_piece_and_board(value)
             let ts = new Date().getTime()
             this.set_button_position(value)
-            this.jump(Math.sqrt((board_x - piece_x) ** 2 + (board_y - piece_y) ** 2))
+        // this.jump(Math.sqrt((board_x - piece_x) ** 2 + (board_y - piece_y) ** 2))
+        this.jump(Math.sqrt((board_x - piece_x) ** 2 + (board_y - piece_y) ** 2) + Math.random()*15)
             n += 1
             if (n == next_rest) {
                 console.log(`已经连续打了${n}下,休息${next_rest_time}s`)
@@ -192,6 +195,7 @@ class Autojumping {
         for (let i = scan_start_y; i < int(h * 2 / 3); i++) {
             for (let j = int(scan_x_border); j < int(w - scan_x_border); j++) { // # 横坐标方面也减少了一部分扫描开销
                 let pixel = im_pixel.getPixel(j, i)
+                // 紫色的小人
                 if ((50 < pixel['r'] && pixel['r'] < 60) && (53 < pixel['g'] && pixel['g'] < 63) && (95 < pixel['b'] && pixel['b'] < 110)) {
                     piece_x_sum += int(j)
                     piece_x_c += 1
