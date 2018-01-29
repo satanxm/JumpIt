@@ -1,4 +1,7 @@
 const ImageParser = require("image-parser");
+
+const gm = require('gm');
+
 const childProcess = require('child_process')
 const execSync = childProcess.execSync
 const exec = childProcess.exec
@@ -134,6 +137,15 @@ class Autojumping {
                 board_y
             } = this.find_piece_and_board(value)
             console.log(piece_x, piece_y, board_x, board_y);
+
+            // annotate an image
+            gm('autojump.png')
+                .stroke("#ff0000")
+                .drawCircle(piece_x, piece_y, piece_x+5, piece_y+5)
+                .drawCircle(board_x, board_y, board_x+5, board_y+5)
+                .write('autojump1.png', function (err) {
+                    if (!err) console.log('done');
+                });
         })
     }
     find_piece_and_board(data) {
